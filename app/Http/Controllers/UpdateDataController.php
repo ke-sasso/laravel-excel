@@ -36,7 +36,7 @@ class UpdateDataController extends Controller
             $request->file->move(public_path('uploads'), $fileName);
         }else{
             if(!file_exists('uploads\usuarios.xlsx')){
-                Session::flash('message-error',  'Estimado usuario es necesario adjuntar un archivo excel.  <b>¡Vueva a intentarlo!</b>.');
+                Session::flash('message-error',  'Estimado usuario es necesario adjuntar un archivo excel.  <b>¡Vuelva a intentarlo!</b>.');
                 return back();
             }
         }
@@ -58,7 +58,7 @@ class UpdateDataController extends Controller
         Mail::to('sasso@gmail.com')
         ->cc(['ke@gmail.com','jo@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
 
-        Session::flash('message-success',  'La información se a procesado con exito, te hemos enviado la lista de usuarios que estan cumpliendo años el día de ahora.');
+        Session::flash('message-success',  'La información se a procesado con éxito, te hemos enviado la lista de usuarios que estan cumpliendo años el día de ahora.');
         return back();
     }
 
