@@ -28,12 +28,22 @@ class UpdateDataController extends Controller
     */
     public function import(Request $request)
     {
+
         $parametros=[];$infousuarios=[];
-        $file = request()->file('file');
-        $data = $this->getDataFromExcelFile(new \App\Http\Imports\WithHeaderImport, $file);
+        if($request->has('file')){
+            $file = request()->file('file');
+            $fileName = 'usuarios'.'.'.$request->file->extension();  
+            $request->file->move(public_path('uploads'), $fileName);
+        }else{
+            if(!file_exists('uploads\usuarios.xlsx')){
+                Session::flash('message-error',  'Estimado usuario es necesario adjuntar un archivo excel.  <b>¡Vueva a intentarlo!</b>.');
+                return back();
+            }
+        }
+        $archivo = public_path('uploads\usuarios.xlsx');
+        $data = $this->getDataFromExcelFile(new \App\Http\Imports\WithHeaderImport,$archivo);
         $yearnow = date('Y');
         $datenow = date('Y-m-d');
-        //dd($data[0]);
         foreach($data[0] as $d){
             $convertir = ($d['fecha_nacimiento'] - 25569) * 86400;
             $fechamd = gmdate("m-d", $convertir);
@@ -48,7 +58,8 @@ class UpdateDataController extends Controller
         Mail::to('sasso@gmail.com')
         ->cc(['ke@gmail.com','jo@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
 
-        return $data;
+        Session::flash('message-success',  'La información se a procesado con exito, te hemos enviado la lista de usuarios que estan cumpliendo años el día de ahora.');
+        return back();
     }
 
     function getDataFromExcelFile($import, $file){
