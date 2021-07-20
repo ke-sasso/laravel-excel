@@ -32,7 +32,7 @@ class UpdateDataController extends Controller
         $parametros=[];$infousuarios=[];
         if($request->has('file')){
             $file = request()->file('file');
-            $fileName = 'usuarios'.'.'.$request->file->extension();  
+            $fileName = 'usuarios'.'.'.$request->file->extension();
             $request->file->move(public_path('uploads'), $fileName);
         }else{
             if(!file_exists('uploads\usuarios.xlsx')){
@@ -48,6 +48,7 @@ class UpdateDataController extends Controller
             $convertir = ($d['fecha_nacimiento'] - 25569) * 86400;
             $fechamd = gmdate("m-d", $convertir);
             $hdbnow = $yearnow.'-'.$fechamd;
+            $d['fecha_nacimiento'] = gmdate("Y-m-d", $convertir);
             if($hdbnow == $datenow){
                 array_push($infousuarios,$d);
             }
@@ -55,8 +56,10 @@ class UpdateDataController extends Controller
         $parametros['usuarios'] =  $infousuarios;
         //return (new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'))->render();
         //dd($parametros);
-        Mail::to('sasso@gmail.com')
-        ->cc(['ke@gmail.com','jo@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
+        /*Mail::to('kevinsasso005@gmail.com')
+        ->cc(['ke@gmail.com','jo@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));*/
+        //Mail::to('f.moran@riottbwa.com')->cc(['kevinsasso005@gmail.com','andy.webdesign@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
+        Mail::to('kevinsasso005@gmail.com')->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
 
         Session::flash('message-success',  'La información se a procesado con éxito, te hemos enviado la lista de usuarios que estan cumpliendo años el día de ahora.');
         return back();
