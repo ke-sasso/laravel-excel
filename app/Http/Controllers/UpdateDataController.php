@@ -19,7 +19,6 @@ use Excel;
 use App\Http\Imports\WithHeaderImport;
 use App\Mail\SendEmails;
 use Illuminate\Support\Facades\Mail;
-
 class UpdateDataController extends Controller
 {
 
@@ -40,8 +39,8 @@ class UpdateDataController extends Controller
                 return back();
             }
         }
-        $archivo = public_path('uploads\usuarios.xlsx');
-        $data = $this->getDataFromExcelFile(new \App\Http\Imports\WithHeaderImport,$archivo);
+        $archivo = public_path('uploads/usuarios.xlsx');
+        $data = $this->getDataFromExcelFile(new WithHeaderImport,$archivo);
         $yearnow = date('Y');
         $datenow = date('Y-m-d');
         foreach($data[0] as $d){
@@ -59,7 +58,9 @@ class UpdateDataController extends Controller
         /*Mail::to('kevinsasso005@gmail.com')
         ->cc(['ke@gmail.com','jo@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));*/
         //Mail::to('f.moran@riottbwa.com')->cc(['kevinsasso005@gmail.com','andy.webdesign@gmail.com'])->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
-        Mail::to('kevinsasso005@gmail.com')->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
+        Mail::to('f.moran@riottbwa.com')
+        ->cc(['kevinsasso005@gmail.com','andy.webdesign@gmail.com'])
+        ->send(new SendEmails($parametros, 'RECORDATORIO DE CUMPLEAÑEROS DIARIOS'));
 
         Session::flash('message-success',  'La información se a procesado con éxito, te hemos enviado la lista de usuarios que estan cumpliendo años el día de ahora.');
         return back();
